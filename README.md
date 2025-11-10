@@ -13,8 +13,8 @@ On top of its previous functionality, our `Building` class now has several usefu
  - A handy `showOptions()` method to tell the user what options are available
  - A few additional class attributes (feel free to explore) 
  
-## Phase 0: Swapping Out `Building.java`
-First things first: replace the original `Building` class from [A7: Use What Your Parent (Class) Gave You](https://github.com/jcrouser/CSC120-A6) with the expanded version contained in this repo, and make sure that your implementations of `House.java`, `Library.java`, and `Cafe.java` still work as expected.
+## Phase 0: Move Files
+First things first: copy `House.java`, `Library.java`, and `Cafe.java` from "A7: Use What Your Parent (Class) Gave You" into your A8 repository. Make sure all of you implementations still work as expected with the new `Building.java` included in the A8 repository.  
 
 ## Phase 1: Overriding Methods
 The `Building` class provides a lot of useful functionality, but some of it doesn't quite work for all three of our `Building` subclasses. This isn't a problem: we'll just **override** them!  
