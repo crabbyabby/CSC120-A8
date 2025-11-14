@@ -108,7 +108,7 @@ public class Building {
         fordHall.enter();
         fordHall.goUp();
         fordHall.goDown();
-        fordHall.exit();
+        fordHall.goToFloor(4);
     }
 
 }
