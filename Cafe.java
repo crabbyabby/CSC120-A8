@@ -1,8 +1,10 @@
+import javax.management.RuntimeErrorException;
+
 /**
  * Creates a Cafe class as an extension of the Building class
  * Has all attributes of Building class and additional ones relating to the storage of coffee supplies
  */
-public class Cafe extends Building {
+public class Cafe extends Building implements CafeRequirements{
 
     //Attributes
     private int nCoffeeOunces; // The number of ounces of coffee remaining in inventory
@@ -55,7 +57,7 @@ public class Cafe extends Building {
      * Sells a coffee
      * Decreases the stored amounts of supply by the size
      * Restocks supplies as needed
-     * @param nCoffeeOunces number of coffee ounces restocked
+     * @param size number of coffee ounces sold
      * @param nSugarPackets number of sugar packets restocked
      * @param nCreams number of creams restocked 
      */
@@ -132,18 +134,35 @@ public class Cafe extends Building {
    * Lists potential commands user can run.
    */
     public void showOptions() {
-        System.out.println("Available options at " + this.name + ":\n + enter() \n + exit() \n + goUp() \n + goDown()\n + goToFloor(n)\n + sellCoffee(n, n, n)");
+        //System.out.println("Available options at " + this.name + ":\n + enter() \n + exit() \n + goUp() \n + goDown()\n + goToFloor(n)\n + sellCoffee(n, n, n)");
+        super.showOptions();
+        System.out.println(" + sellCoffee(n, n, n)");
     }
 
+    /**
+     * Allows user to go to a certain floor
+     * Can skip floors if there is an elevator
+     * @param n number floor to go to
+     * @throws Exception if there is no elevator and they try to skip floors
+     * @throws Exception if they try going to floor that does not exist.
+     */
     public void goToFloor(int n){
-      if (this.hasElevator){
-        super.goToFloor(n);
-      } else {
-        if (this.activeFloor - n > 1 || this.activeFloor - n < -1){
-          throw new RuntimeException("You can't move there!");
+      try{
+        if (n > 1 && n <= this.nFloors){
+            if (this.hasElevator){
+                super.goToFloor(n);
+            } else {
+                if (this.activeFloor - n > 1 || this.activeFloor - n < -1){
+                    throw new RuntimeException("You can't move there!");
+                } else {
+                    super.goToFloor(n);
+                }
+            }
         } else {
-          super.goToFloor(n);
+            throw new RuntimeException("Cannot go to a floor that does not exist.");
         }
+      } catch(Exception e) {
+        System.out.println(e.getLocalizedMessage());
       }
     }
 

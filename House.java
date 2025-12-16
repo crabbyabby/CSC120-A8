@@ -5,7 +5,7 @@
 
 import java.util.ArrayList;
 
-public class House extends Building{
+public class House extends Building implements HouseRequirements{
 
   /**
    * An ArrayList of the Student class to track residents
@@ -22,10 +22,21 @@ public class House extends Building{
     this("<Name Unknown>", "<Address Unknown>", 1, true, false);
   }
 
-  public House(String name, String address, int nFloors, boolean hasElevator){
-    this(name, address, nFloors, false, hasElevator);
-
+  /**
+   * Constructs a new House with specific attributes about its location and interior
+   * @param name A String of the name of the house
+   * @param address A String of the address of the house
+   * @param nFloors An integer of the number of floors in the house
+   * @param residents An ArrayList of the Student class which tracks the name and other identifying information about the student
+   * @param hasDiningRoom A boolean which details if the house does or doesn't have a dining room
+   */
+  public House(String name, String address, int nFloors, boolean hasDiningRoom) {
+    super(name, address, nFloors);
+    this.residents = new ArrayList<Student>();
+    this.hasDiningRoom = hasDiningRoom;
+    System.out.println("You have built a house: 🏠");
   }
+
 
   /**
    * Constructs a new House with specific attributes about its location and interior
@@ -73,11 +84,16 @@ public class House extends Building{
    * @return boolean of if there's a dining room
    */
   public void moveIn(Student s){
-    if (this.residents.contains(s)){
-      throw new RuntimeException("Student is already moved in");
-    } else {
-      this.residents.add(s);
+    try{
+      if (this.residents.contains(s)){
+        throw new RuntimeException("Student is already moved in");
+      } else {
+        this.residents.add(s);
+      }
+    } catch (Exception e){
+      System.out.println(e.getLocalizedMessage());
     }
+
   }
 
   /**
@@ -108,17 +124,32 @@ public class House extends Building{
     }
   }
 
-  public void goToFloor(int n){
-    if (this.hasElevator){
-      super.goToFloor(n);
-    } else {
-      if (this.activeFloor - n > 1 || this.activeFloor - n < -1){
-        throw new RuntimeException("You can't move there!");
-      } else {
-        super.goToFloor(n);
+    /**
+     * Allows user to go to a certain floor
+     * Can skip floors if there is an elevator
+     * @param n number floor to go to
+     * @throws Exception if there is no elevator and they try to skip floors
+     * @throws Exception if they try going to floor that does not exist.
+     */
+    public void goToFloor(int n){
+      try{
+        if (n > 1 && n <= this.nFloors){
+            if (this.hasElevator){
+                super.goToFloor(n);
+            } else {
+                if (this.activeFloor - n > 1 || this.activeFloor - n < -1){
+                    throw new RuntimeException("You can't move there!");
+                } else {
+                    super.goToFloor(n);
+                }
+            }
+        } else {
+            throw new RuntimeException("Cannot go to a floor that does not exist.");
+        }
+      } catch(Exception e) {
+        System.out.println(e.getLocalizedMessage());
       }
     }
-  }
 
   /**
    * Getter for hasElevator variable
@@ -132,10 +163,12 @@ public class House extends Building{
    * Lists potential commands user can run.
    */
   public void showOptions() {
-      System.out.println("Available options at " + this.name + 
-        ":\n + enter() \n + exit() \n + goUp() \n + goDown()\n + goToFloor(n)\n + hasDiningRoom(n, n, n)" +
+    super.showOptions();
+    System.out.println(" + hasDiningRoom(n, n, n)" +
         "\n + nResidents()\n + moveIn(s)\n + moveOut(s)\n + isResident(s)");
-  }
+      
+    }
+
 
   public static void main(String[] args) {
     House home = new House("Home", "456 House Street", 3, true, true);

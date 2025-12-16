@@ -4,7 +4,7 @@
  */
 import java.util.Hashtable;
 
-public class Library extends Building{
+public class Library extends Building implements LibraryRequirements{
 
   //Attributes
   private Hashtable<String, Boolean> collection;
@@ -124,10 +124,15 @@ public class Library extends Building{
    * @return boolean if the collection contains the book
    */
     public boolean isAvailable(String title){
-      if (containsTitle(title)){
-        return this.collection.get(title);
-      } else {
-        throw new RuntimeException("This book doesn't exist in the collection.");
+      try{
+        if (containsTitle(title)){
+          return this.collection.get(title);
+        } else {
+          throw new RuntimeException("This book doesn't exist in the collection.");
+        }
+      } catch (Exception e){
+        System.out.println(e.getLocalizedMessage());
+        return false;
       }
     }
 
@@ -135,37 +140,55 @@ public class Library extends Building{
    * Prints collection in easy-to-read String
    */
     public void printCollection(){
-      if (this.collection.size() < 1){
-        throw new RuntimeException("No books in the collection to print out.");
-      } else {
-        this.collection.forEach((title, available) ->{
-          if (available){
-            System.out.println(title + " is available.");
-          } else {
-            System.out.println(title + " is not available.");
-          }
-        });
+      try{
+        if (this.collection.size() < 1){
+          throw new RuntimeException("No books in the collection to print out.");
+        } else {
+          this.collection.forEach((title, available) -> {
+            if (available){
+              System.out.println(title + " is available.");
+            } else {
+              System.out.println(title + " is not available.");
+            }
+          });
+        }
+      } catch (Exception e){
+        System.out.println(e.getLocalizedMessage());
       }
     }
+
    /**
    * Lists potential commands user can run.
    */
     public void showOptions() {
-      System.out.println("Available options at " + this.name + 
-        ":\n + enter() \n + exit() \n + goUp() \n + goDown()\n + goToFloor(n)\n + addTitle(s)" +
-        "\n + removeTitle(s)\n + checkOut(s)\n + returnBook(s)\n + containsTitle(s)" +
-        "\n + containsTitle(s)\n + isAvailable(s)\n + printCollection()");
+      super.showOptions();
+      System.out.println(" + addTitle(s)\n + removeTitle(s)\n + chekcOut(s)\n + returnBook(s)\n + containsTitle(s)\n + containsTitle(s)\n + isAvailable(s)\n + printCollection()");
     }
 
+    /**
+     * Allows user to go to a certain floor
+     * Can skip floors if there is an elevator
+     * @param n number floor to go to
+     * @throws Exception if there is no elevator and they try to skip floors
+     * @throws Exception if they try going to floor that does not exist.
+     */
     public void goToFloor(int n){
-      if (this.hasElevator){
-        super.goToFloor(n);
-      } else {
-        if (this.activeFloor - n > 1 || this.activeFloor - n < -1){
-          throw new RuntimeException("You can't move there!");
+      try{
+        if (n > 1 && n <= this.nFloors){
+            if (this.hasElevator){
+                super.goToFloor(n);
+            } else {
+                if (this.activeFloor - n > 1 || this.activeFloor - n < -1){
+                    throw new RuntimeException("You can't move there!");
+                } else {
+                    super.goToFloor(n);
+                }
+            }
         } else {
-          super.goToFloor(n);
+            throw new RuntimeException("Cannot go to a floor that does not exist.");
         }
+      } catch(Exception e) {
+        System.out.println(e.getLocalizedMessage());
       }
     }
   
@@ -174,6 +197,7 @@ public class Library extends Building{
       
       Library testLibrary = new Library("Tester", "123 Green Street", 3, false);
       testLibrary.enter();
+      testLibrary.showOptions();
       testLibrary.goToFloor(50);
     }
   
