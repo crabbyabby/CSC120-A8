@@ -148,18 +148,10 @@ public class Cafe extends Building implements CafeRequirements{
      */
     public void goToFloor(int n){
       try{
-        if (n > 1 && n <= this.nFloors){
-            if (this.hasElevator){
-                super.goToFloor(n);
-            } else {
-                if (this.activeFloor - n > 1 || this.activeFloor - n < -1){
-                    throw new RuntimeException("You can't move there!");
-                } else {
-                    super.goToFloor(n);
-                }
-            }
+        if (n == 1){
+            super.goToFloor(n);
         } else {
-            throw new RuntimeException("Cannot go to a floor that does not exist.");
+            throw new RuntimeException("Can only go to the first floor in the Cafe.");
         }
       } catch(Exception e) {
         System.out.println(e.getLocalizedMessage());
@@ -181,6 +173,7 @@ public class Cafe extends Building implements CafeRequirements{
         yummy.showOptions();
         System.out.println(yummy);
         yummy.enter();
+        yummy.goToFloor(1);
     }
     
 }
